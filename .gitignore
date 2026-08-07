@@ -1,6 +1,7 @@
-# Capture data
+# Capture data and generated output
 robocap/
 output/
+robocap_restored/
 
 # Python
 __pycache__/
