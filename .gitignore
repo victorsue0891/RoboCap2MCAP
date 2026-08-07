@@ -1,0 +1,16 @@
+# Capture data
+robocap/
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Claude Code
+.claude/
+CLAUDE.md

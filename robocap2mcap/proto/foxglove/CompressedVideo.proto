@@ -1,0 +1,13 @@
+syntax = "proto3";
+package foxglove;
+option java_package = "dev.foxglove.schemas";
+
+import "google/protobuf/timestamp.proto";
+
+message CompressedVideo {
+  google.protobuf.Timestamp timestamp = 1;
+  string frame_id = 2;
+  bytes data = 3;
+  bool keyframe_only = 4;
+  string codec = 5;
+}

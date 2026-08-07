@@ -1,0 +1,13 @@
+syntax = "proto3";
+package foxglove;
+option java_package = "dev.foxglove.schemas";
+
+import "google/protobuf/timestamp.proto";
+import "foxglove/Vector3.proto";
+
+message MagneticField {
+  google.protobuf.Timestamp timestamp = 1;
+  string frame_id = 2;
+  foxglove.Vector3 magnetic_field = 3;
+  repeated double magnetic_field_covariance = 4;
+}
