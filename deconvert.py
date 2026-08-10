@@ -246,7 +246,7 @@ def _detect_codec(mcap_path: Path, topic: str) -> str:
     """Return codec name ('h265' or 'h264') from the first video message."""
     with open(mcap_path, "rb") as f:
         for item in read_protobuf_messages(f, topics=[topic]):
-            return getattr(item.proto_msg, "codec", "h265") or "h265"
+            return getattr(item.proto_msg, "format", "h265") or "h265"
     return "h265"
 
 

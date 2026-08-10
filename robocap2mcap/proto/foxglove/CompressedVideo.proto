@@ -8,6 +8,5 @@ message CompressedVideo {
   google.protobuf.Timestamp timestamp = 1;
   string frame_id = 2;
   bytes data = 3;
-  bool keyframe_only = 4;
-  string codec = 5;
+  string format = 4;
 }
