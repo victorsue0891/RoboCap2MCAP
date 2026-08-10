@@ -30,6 +30,8 @@ Each RoboCap segment (3 SQLite databases + 6 H.265 videos) becomes one MCAP file
 physical units).
 
 **Video** is stored as H.265 Annex B compressed packets — no re-encoding, original quality preserved.
+Each `foxglove.CompressedVideo` message sets `format` (`"h265"` or `"h264"`, matching Foxglove's official
+schema) so Foxglove Studio's video panel can pick the right decoder.
 
 **Timestamps** in MCAP are UTC epoch nanoseconds, derived from the session folder name
 (`YYYYMMDD_HHMMSS` parsed as UTC) plus each sensor sample's offset from the segment start.
@@ -103,6 +105,14 @@ Windows 11 does not include an HEVC decoder by default. If video does not play i
 H.264 transcoding is lossless in quality terms (CRF 23 / QP 23) but H.264 files are ~5× larger than the
 original H.265 at equivalent quality. GPU encoding (NVENC / QuickSync / AMF) is auto-detected and
 significantly faster than CPU.
+
+### Video not displaying at all (blank/black panel, no decode error)
+
+If Foxglove shows no image whatsoever for `/video/*` topics — not even a codec/HEVC error — the MCAP was
+likely produced before `CompressedVideo.proto` was fixed to match Foxglove's actual schema (see
+[Changelog](#changelog)). Foxglove's video panel expects a `format` field to pick the decoder; older
+files from this converter wrote `codec`/`keyframe_only` instead, which Foxglove silently ignores.
+**Reconvert the session** with the current `convert.py` — old MCAP files cannot be fixed in place.
 
 ## deconvert.py — MCAP → RoboCap
 
@@ -226,3 +236,12 @@ RoboCap2MCAP/
 - **Segment timestamps:** IMU/mag `timestamp` columns are device monotonic clock values in nanoseconds
   (uptime since boot, not epoch). The MCAP writer aligns them to UTC using the session folder name as the
   epoch anchor, so Foxglove Studio displays wall-clock time correctly.
+
+## Changelog
+
+- **2026-08-10:** Fixed `CompressedVideo.proto` — it had drifted from Foxglove's real
+  `foxglove.CompressedVideo` schema, carrying an extra `bool keyframe_only` field and naming the codec
+  field `codec` instead of the official `format`. Foxglove Studio's built-in video panel keys off a field
+  literally named `format` to choose a decoder, so video silently failed to render regardless of
+  `keyframe_only`'s value. MCAP files converted before this fix need to be regenerated with
+  `python convert.py <session>` — see [Video not displaying at all](#video-not-displaying-at-all-blankblack-panel-no-decode-error).

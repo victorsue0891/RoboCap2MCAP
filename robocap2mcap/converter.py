@@ -87,8 +87,7 @@ def _write_video(writer, video_path, channel, frame_id, t0_epoch, pbar, video_co
             timestamp=_ts(log_time),
             frame_id=frame_id,
             data=data,
-            keyframe_only=keyframe,
-            codec=video_codec,
+            format=video_codec,
         )
         writer.write_message(channel, msg, log_time=log_time, publish_time=log_time)
         if pbar:
